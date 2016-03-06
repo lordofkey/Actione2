@@ -22,14 +22,15 @@ print(ex)
 num = dim(alldata)[1]
 
 
-setwd("data/")
-tiff('ex_type0.tif')
+#setwd("data/result/time1")
+wd1 = "data/result/time1"
+tiff(paste0(wd1,'ex_type0.tif'))
 boxplot(alldata[alldata$Type == 0,]$Acetone)
 dev.off()
-tiff('ex_type1.tif')
+tiff(paste0(wd1,'ex_type1.tif'))
 boxplot(alldata[alldata$Type == 1,]$Acetone)
 dev.off()
-tiff('ex_type2.tif')
+tiff(paste0(wd1,'ex_type2.tif'))
 boxplot(alldata[alldata$Type == 2,]$Acetone)
 dev.off()
 
@@ -52,12 +53,12 @@ for (i in c(1:dim(alldata)[1]))
     Actone = c(Actone,alldata[i,10])
   }
 }
-tiff('normaltest1.tif')
+tiff(paste0(wd1,'normaltest1.tif'))
 hist(Actone,freq = FALSE,ylim = c(0,0.8))
 lines(density(Actone),col='blue')
 dev.off()
 shapiro.test(Actone)
-tiff('normaltest2.tif')
+tiff(paste0(wd1,'normaltest2.tif'))
 qqnorm(Actone, main="Q-Q plot: Price")
 qqline(Actone)
 dev.off()
@@ -70,7 +71,7 @@ Rtype1 = alldata$Type != 2
 Rtype2 = alldata$Type != 1
 library(Daim)
 #直接绘制ROC曲线
-tiff('roctype1.tif')
+tiff(paste0(wd1,'roctype1.tif'))
 roc = roc(alldata[Rtype1,]$Acetone,alldata[Rtype1,]$Type,'1')
 plot(roc)
 dev.off()
@@ -82,7 +83,7 @@ rocresult[3,] = c(summary(roc)$best.cut,summary(roc)$TPR,summary(roc)$FPR)
 row.names(rocresult) = c('筛查','确诊','最佳阈值')
 write.xlsx2(rocresult,'result.xlsx',sheetName = 'roct1',append = TRUE)
 
-tiff('roctype2.tif')
+tiff(paste0(wd1,'roctype2.tif'))
 roc = roc(alldata[Rtype2,]$Acetone,alldata[Rtype2,]$Type,'2')
 plot(roc)
 dev.off()
@@ -122,7 +123,7 @@ for(i in c(1:5))
   {
     if(!is.na(t1))
     {
-      tiff(paste0('roctype1g',i,'.tif'))
+      tiff(paste0(wd1,'roctype1g',i,'.tif'))
       roc = roc(alldata[bmig[[i]]&Rtype1,'Acetone'],alldata[bmig[[i]]&Rtype1,'Type'],'1')
       plot(roc)
       dev.off()
@@ -132,12 +133,12 @@ for(i in c(1:5))
       rocresult[2,] = c(roc$cutoff[FPR5],roc$TPR[FPR5],roc$FPR[FPR5])
       rocresult[3,] = c(summary(roc)$best.cut,summary(roc)$TPR,summary(roc)$FPR)
       row.names(rocresult) = c('筛查','确诊','最佳阈值')
-      write.xlsx2(rocresult,'result.xlsx',sheetName = paste0('roct1g',i),append = TRUE)
+      write.xlsx2(rocresult,paste0(wd1,'result.xlsx'),sheetName = paste0('roct1g',i),append = TRUE)
       bestcuts1[i] = summary(roc)$best.cut
     }
     if(!is.na(t2))
     {
-      tiff(paste0('roctype2g',i,'.tif'))
+      tiff(paste0(wd1,'roctype2g',i,'.tif'))
       roc = roc(alldata[bmig[[i]]&Rtype2,'Acetone'],alldata[bmig[[i]]&Rtype2,'Type'],'2')
       plot(roc)
       dev.off()
@@ -147,7 +148,7 @@ for(i in c(1:5))
       rocresult[2,] = c(roc$cutoff[FPR5],roc$TPR[FPR5],roc$FPR[FPR5])
       rocresult[3,] = c(summary(roc)$best.cut,summary(roc)$TPR,summary(roc)$FPR)
       row.names(rocresult) = c('筛查','确诊','最佳阈值')
-      write.xlsx2(rocresult,'result.xlsx',sheetName = paste0('roct2g',i),append = TRUE)
+      write.xlsx2(rocresult,paste0(wd1,'result.xlsx'),sheetName = paste0('roct2g',i),append = TRUE)
       bestcuts2[i] = summary(roc)$best.cut
     }
   }
@@ -159,11 +160,11 @@ numframe[6,] = c(t0,t1,t2)
 row.names(numframe) = c('~18.5','18.5-24.99','25-28','28-32','32~','total')
 write.xlsx2(numframe,'result.xlsx',sheetName = 'num',append = TRUE)
 
-tiff('bestcut1.tif')
+tiff(paste0(wd1,'bestcut1.tif'))
 plot(1:3,bestcuts1)
 lines(1:3,bestcuts1)
 dev.off()
-tiff('bestcut2.tif')
+tiff(paste0(wd1,'bestcut2.tif'))
 plot(1:5,bestcuts2)
 lines(c(1,2,3,5),bestcuts2[c(1,2,3,5)])
 dev.off()
@@ -172,6 +173,6 @@ dev.off()
 library('e1071')
 inputData = data.frame(alldata[, c(9,10)], response = as.factor(alldata$Type))
 svmfit = svm(response ~., data = inputData, kernel = "polynomial",degree = 5,cost = 10, scale = FALSE) # linear svm, scaling turned OFFpolynomial:radial sigmoid
-tiff('svm.tif')
+tiff(paste0(wd1,'svm.tif'))
 plot(svmfit, inputData)
 dev.off()
