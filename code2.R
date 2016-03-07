@@ -22,8 +22,7 @@ print(ex)
 num = dim(alldata)[1]
 
 
-#setwd("data/result/time1")
-wd1 = "data/result/time1"
+wd1 = "data/result/time3/"
 tiff(paste0(wd1,'ex_type0.tif'))
 boxplot(alldata[alldata$Type == 0,]$Acetone)
 dev.off()
@@ -81,7 +80,7 @@ FPR5 = length(roc$FPR)-table(roc$FPR<0.05)['TRUE']
 rocresult[2,] = c(roc$cutoff[FPR5],roc$TPR[FPR5],roc$FPR[FPR5])
 rocresult[3,] = c(summary(roc)$best.cut,summary(roc)$TPR,summary(roc)$FPR)
 row.names(rocresult) = c('筛查','确诊','最佳阈值')
-write.xlsx2(rocresult,'result.xlsx',sheetName = 'roct1',append = TRUE)
+write.xlsx2(rocresult,paste0(wd1,'result.xlsx'),sheetName = 'roct1',append = TRUE)
 
 tiff(paste0(wd1,'roctype2.tif'))
 roc = roc(alldata[Rtype2,]$Acetone,alldata[Rtype2,]$Type,'2')
@@ -93,7 +92,7 @@ FPR5 = length(roc$FPR)-table(roc$FPR<0.05)['TRUE']
 rocresult[2,] = c(roc$cutoff[FPR5],roc$TPR[FPR5],roc$FPR[FPR5])
 rocresult[3,] = c(summary(roc)$best.cut,summary(roc)$TPR,summary(roc)$FPR)
 row.names(rocresult) = c('筛查','确诊','最佳阈值')
-write.xlsx2(rocresult,'result.xlsx',sheetName = 'roct2',append = TRUE)
+write.xlsx2(rocresult,paste0(wd1,'result.xlsx'),sheetName = 'roct2',append = TRUE)
 
 
 bmig = list()
@@ -158,7 +157,7 @@ t1 = as.numeric(table(type[[2]])['TRUE'])
 t2 = as.numeric(table(type[[3]])['TRUE'])
 numframe[6,] = c(t0,t1,t2)
 row.names(numframe) = c('~18.5','18.5-24.99','25-28','28-32','32~','total')
-write.xlsx2(numframe,'result.xlsx',sheetName = 'num',append = TRUE)
+write.xlsx2(numframe,paste0(wd1,'result.xlsx'),sheetName = 'num',append = TRUE)
 
 tiff(paste0(wd1,'bestcut1.tif'))
 plot(1:3,bestcuts1)
